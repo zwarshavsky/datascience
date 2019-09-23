@@ -19,7 +19,7 @@ from flask import jsonify
 from pandas.io.json import json_normalize
 
 # TODO Fix robots.txt
-app = Flask(__name__)
+application = Flask(__name__)
 client_credentials_manager = SpotifyClientCredentials(client_id='200f9f0be54b4daab1c2561098b3891a', client_secret='936688039db4402084f44eda09f17ffe')
 client_credentials_manager = client_credentials_manager
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -54,12 +54,12 @@ def cosine_similarity(a, b):
 def all_similarities(a, dfy):
   similar_songs = []
   for spotify_song, metadata in zip(array, dfy.values):
-    similarity = cosine_similarity(a[0], spotify_song)
-    similar_songs.append({'similarity': similarity, 'values': metadata[1]})
+    similarity = cosine_similarity(a, spotify_song)
+    similar_songs.append({'similarity': similarity.tolist(), 'values': metadata[1]})
   return similar_songs
 
 
-@app.route("/", methods=['GET', 'POST'])
+@application.route("/", methods=['GET', 'POST'])
 def default():
 
     content = request.get_json(silent=True)
@@ -69,11 +69,11 @@ def default():
 
     #song = array[1549]
     similarities = all_similarities(song, dfy)
-    sorted_list = sorted(similarities, key=lambda i: i['similarity'], reverse=True)[:3]
+    sorted_list = sorted(similarities, key=lambda i: i['similarity'], reverse=True)[1:3]
     json_dict = {"songs": sorted_list}
     #data = json.dumps(json_dict)
     return jsonify(json_dict)
 
 
 if __name__ == "__main__":
-    app.run()
+    application.run()
