@@ -12,6 +12,7 @@ spotipy = "*"
 sqlalchemy = "*"
 boto3 = "*"
 sagemaker = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "3.7"
